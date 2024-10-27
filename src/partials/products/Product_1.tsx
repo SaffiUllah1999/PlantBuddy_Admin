@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from "react";
 import CommonDataService from "../../services/commondataservice";
 import { SERVICE_ROUTE } from "../../services/endpoints";
@@ -13,6 +12,7 @@ export default function Product_1() {
     name: "",
     price: "",
     image: "",
+    category: "Indoor", // Default category
   });
 
   const handleImageUpload = (event) => {
@@ -47,7 +47,7 @@ export default function Product_1() {
       .then((res) => {
         setDataset((prev) => [...prev, res?.data]);
         setModalOpen(false);
-        setNewArticle({ title: "", description: "", image: "" });
+        setNewArticle({ name: "", price: "", image: "", category: "Indoor" }); // Reset to default
       })
       .catch((error) => {
         console.log(error);
@@ -56,7 +56,7 @@ export default function Product_1() {
 
   const Del_Call = (id) => {
     commonDataService
-      .removeCall(`/articles/`,id) // Call the DELETE endpoint
+      .removeCall(`/articles`, id) // Call the DELETE endpoint
       .then(() => {
         setDataset((prev) => prev.filter(article => article._id !== id)); // Update dataset after deletion
         Get_Products();
@@ -88,23 +88,35 @@ export default function Product_1() {
             <h2 className="text-xl mb-4">Add New Product</h2>
             <input
               type="text"
-              placeholder="Name"
-              value={newArticle.title}
+              placeholder="Enter Name"
+              value={newArticle.name}
               onChange={(e) => setNewArticle({ ...newArticle, name: e.target.value })}
               className="border p-2 mb-2 w-full"
             />
-            <textarea
-              placeholder="Price"
-              value={newArticle.description}
+            <input
+              type="text"
+              placeholder="Enter Price"
+              value={newArticle.price}
               onChange={(e) => setNewArticle({ ...newArticle, price: e.target.value })}
               className="border p-2 mb-2 w-full"
             />
+            {/* Dropdown for category selection */}
+            <h5>Select Category</h5>
+            <select
+              value={newArticle.category}
+              onChange={(e) => setNewArticle({ ...newArticle, category: e.target.value })}
+              className="border p-2 mb-2 w-full"
+            >
+              <option value="1" label={"Indoor"}>Indoor</option>
+              <option value="2" label={"Outdoor"}>Outdoor</option>
+            </select>
             <input
               type="file"
               ref={fileInputRef}
               onChange={handleImageUpload}
               style={{ display: "none" }}
             />
+            
             <button
               onClick={handleButtonClick}
               className="mr-2 bg-gray-300 hover:bg-gray-400"
@@ -132,28 +144,26 @@ export default function Product_1() {
 
       <div className="p-3">
         <div>
-          <tbody>
-            {dataset?.map((article, index) => (
-              <div key={article._id} className="bg-white shadow-sm rounded-xl p-3 my-2">
-                <div className="flex justify-between items-center">
-                  <div>{index + 1}</div>
-                  <IoMdClose
-                    className="cursor-pointer text-red-600"
-                    onClick={() => Del_Call(article._id)} // Call delete on click
-                  />
-                </div>
-                <div>{"Product id: " + article?._id}</div>
-                <div>{"Name: " + article?.name}</div>
-                <div>{"Price: " + article?.price}</div>
-                <img
-                  style={{ height: 100, width: 100 }}
-                  src={article?.image}
-                  alt="Image"
+          {dataset?.map((article, index) => (
+            <div key={article._id} className="bg-white shadow-sm rounded-xl p-3 my-2">
+              <div className="flex justify-between items-center">
+                <div>{index + 1}</div>
+                <IoMdClose
+                  className="cursor-pointer text-red-600"
+                  onClick={() => Del_Call(article._id)} // Call delete on click
                 />
-             
               </div>
-            ))}
-          </tbody>
+              <div>{"Product id: " + article?._id}</div>
+              <div>{"Name: " + article?.name}</div>
+              <div>{"Price: " + article?.price}</div>
+              <div>{"Category: " + article?.category}</div>
+              <img
+                style={{ height: 100, width: 100 }}
+                src={article?.image}
+                alt="Image"
+              />
+            </div>
+          ))}
         </div>
       </div>
     </div>
