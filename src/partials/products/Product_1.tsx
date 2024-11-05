@@ -12,7 +12,7 @@ export default function Product_1() {
     name: "",
     price: "",
     image: "",
-    category: "Indoor", // Default category
+    category: "1", // Default category
   });
 
   const handleImageUpload = (event) => {
@@ -156,7 +156,7 @@ export default function Product_1() {
               <div>{"Product id: " + article?._id}</div>
               <div>{"Name: " + article?.name}</div>
               <div>{"Price: " + article?.price}</div>
-              <div>{"Category: " + article?.category}</div>
+              <div>Category: {article?.category ? article?.category?.toString()  === "1" ? "Indoor" : article?.category?.toString()  === "2" ? "Outdoor" :"--":  "--"}</div>
               <img
                 style={{ height: 100, width: 100 }}
                 src={article?.image}
